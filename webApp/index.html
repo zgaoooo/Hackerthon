@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style type="text/css">
+    canvas{
+    }
+  </style>
+</head>
+<body>
+<form>
+Barcode: <input type="text" id="barcodeid" />
+<input type="button" onclick="Query()" value="查询" />
+</form>
+<script type="text/javascript"> 
+function httpRequest(paramObj,fun,errFun) {
+	var xmlhttp = null;
+	/*创建XMLHttpRequest对象，
+	 *老版本的 Internet Explorer（IE5 和 IE6）使用 ActiveX 对象：new ActiveXObject("Microsoft.XMLHTTP")
+	 * */
+	if(window.XMLHttpRequest) {
+		xmlhttp = new XMLHttpRequest();
+	}else if(window.ActiveXObject) {
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	/*判断是否支持请求*/
+	if(xmlhttp == null) {
+		alert('你的浏览器不支持XMLHttp');
+		return;
+	}
+	/*请求方式，并且转换为大写*/
+	var httpType = (paramObj.type || 'GET').toUpperCase();
+	/*数据类型*/
+	var dataType = paramObj.dataType || 'json';
+	/*请求接口*/
+	var httpUrl = paramObj.httpUrl || '';
+	/*是否异步请求*/
+	var async = paramObj.async || true;
+	/*请求参数--post请求参数格式为：foo=bar&lorem=ipsum*/
+	var paramData = paramObj.data || [];
+	var requestData = '';
+	
+	requestData = JSON.stringify(paramData);
+	console.log(requestData)
+	
+	/*请求接收*/
+	xmlhttp.onreadystatechange = function() {
+    if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      /*成功回调函数*/
+      fun(xmlhttp.responseText);
+    }else{
+    	/*失败回调函数*/
+    	errFun;
+    }
+	}			
+	
+	/*接口连接，先判断连接类型是post还是get*/
+	if(httpType == 'GET') {
+		xmlhttp.open("GET",httpUrl,async);
+	xmlhttp.send(null);
+	}else if(httpType == 'POST'){
+		xmlhttp.open("POST",httpUrl,async);
+		//发送合适的请求头信息
+		xmlhttp.setRequestHeader("Content-type", "application/json"); 
+		xmlhttp.send(requestData); 
+	}
+}
+
+//cookie相关操作，不需要dom加载完成后运行，因此单独写
+
+//设置cookie
+function setCookie(name,value){
+    if(!name||!value) return;
+    var Days = 30;//默认30天
+    var exp  = new Date();
+    exp.setTime(exp.getTime() + Days*24*60*60*1000);
+    document.cookie = name + "="+ encodeURIComponent(value) +";expires="+ exp.toUTCString();
+}
+
+//获取cookie
+function getCookie(name){
+    var arr = document.cookie.match(new RegExp("(^| )"+name+"=([^;]*)(;|$)"));
+    if(arr != null) return decodeURIComponent(arr[2]);
+    return null;
+}
+
+//删除cookie
+function delCookie(name){
+    var exp = new Date();
+    exp.setTime(exp.getTime() - 1);
+    var cval=getCookie(name);
+    if(!cval) document.cookie=name +"="+cval+";expires="+exp.toUTCString();
+}
+
+var mW = 1500;
+var mH = 600;
+var mData = [          ['Gas', 20],
+                        ['Water,Plastic', 20],
+                        ['Energy', 20],
+                        ['Energy efficiencv', 20],
+                        ['Repair+Recycle', 20]];
+for(var i = 0; i < mData.length; i ++)
+{
+	if(getCookie(i+1)!=null)
+		mData[i][1]=parseFloat(getCookie(i+1));
+}
+var paramObj = {
+	httpUrl : 'http://127.0.0.1:5000/v1/product/',
+	type : 'post',
+	data : {'a': 0.6, 'b': 0.2, 'c': 0.2, 'd': 0.4, 'e': 0.3},
+}
+      // 绘制多边形边
+    function drawPolygon(){
+        var ctx=this.ctx;
+		ctx.save();
+
+        ctx.strokeStyle = this.mColorPolygon;
+        var r = this.radius/ this.mCount; //单位半径
+        //画6个圈
+        for(var i = 0; i < this.mCount; i ++){
+            ctx.beginPath();        
+            var currR = r * ( i + 1); //当前半径
+            //画6条边
+            for(var j = 0; j < this.mCount; j ++){
+                var x = this.center.x + currR * Math.cos(this.mAngle * j);
+                var y = this.center.y + currR * Math.sin(this.mAngle * j);
+
+                ctx.lineTo(x, y);
+            }
+            ctx.closePath()
+            ctx.stroke();
+        }
+		
+      ctx.restore();
+    }
+	//顶点连线
+    function drawLines(){
+		var ctx=this.ctx;
+        ctx.save();
+
+        ctx.beginPath();
+        ctx.strokeStyle = this.mColorLines;
+
+        for(var i = 0; i < this.mCount; i ++){
+            var x = this.center.x + this.radius * Math.cos(this.mAngle * i);
+            var y = this.center.y + this.radius * Math.sin(this.mAngle * i);
+
+            ctx.moveTo(this.center.x, this.center.y);
+            ctx.lineTo(x, y);
+        }
+
+        ctx.stroke();
+
+        ctx.restore();
+    }
+	//绘制文本
+    function drawText(){
+		var ctx=this.ctx;
+        ctx.save();
+
+        var fontSize = 15;
+        ctx.font = fontSize + 'px Microsoft Yahei';
+        ctx.fillStyle = this.mColorText;
+
+        for(var i = 0; i < this.mCount; i ++){
+            var x = this.center.x + this.radius * Math.cos(this.mAngle * i);
+            var y = this.center.y + this.radius * Math.sin(this.mAngle * i);
+
+            if( this.mAngle * i >= 0 && this.mAngle * i <= Math.PI / 2 ){
+                ctx.fillText(this.data[i][0], x, y + fontSize); 
+            }else if(this.mAngle * i > Math.PI / 2 && this.mAngle * i <= Math.PI){
+                ctx.fillText(this.data[i][0], x - ctx.measureText(this.data[i][0]).width, y + fontSize);    
+            }else if(this.mAngle * i > Math.PI && this.mAngle * i <= Math.PI * 3 / 2){
+                ctx.fillText(this.data[i][0], x - ctx.measureText(this.data[i][0]).width, y);   
+            }else{
+                ctx.fillText(this.data[i][0], x, y);
+            }
+
+        }
+		ctx.font = 10 + 'px Microsoft Yahei';
+		for(var i=0;i<=1;i+=0.2)
+		{
+			ctx.fillText(i.toFixed(2), this.center.x+this.radius*i,this.center.y);
+		}
+        ctx.restore();
+    }
+
+    //绘制数据区域
+    function drawRegion(){
+        var ctx=this.ctx;
+		ctx.save();
+
+        ctx.beginPath();
+        for(var i = 0; i < this.mCount; i ++){
+            var x = this.center.x + this.radius * Math.cos(this.mAngle * i) * this.data[i][1] / 100;
+            var y = this.center.y + this.radius * Math.sin(this.mAngle * i) * this.data[i][1] / 100;
+
+            ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fillStyle = this.mColorRegionfill;
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    //画点
+    function drawCircle(){
+        var ctx=this.ctx;
+		ctx.save();
+
+        var r = this.mPointSize;
+        for(var i = 0; i < this.mCount; i ++){
+            var x = this.center.x + this.radius * Math.cos(this.mAngle * i) * this.data[i][1] / 100;
+            var y = this.center.y + this.radius * Math.sin(this.mAngle * i) * this.data[i][1] / 100;
+
+            ctx.beginPath();            
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fillStyle = this.mColorCirclefill;
+            ctx.fill();
+        }       
+
+        ctx.restore();
+    }
+	//点击响应
+	function RadarClick(clickx,clicky)
+	{
+		var r = this.mPointSize;
+        for(var i = 0; i < this.mCount; i ++){
+            var x = this.center.x + this.radius * Math.cos(this.mAngle * i) * this.data[i][1] / 100;
+            var y = this.center.y + this.radius * Math.sin(this.mAngle * i) * this.data[i][1] / 100;
+			//alert("ddddd");
+            if(Math.sqrt(Math.pow(clickx- x, 2)
+            + Math.pow(clicky - y, 2))<r)
+			{
+				this.isDragging=true;
+				this.dragIndex=i;
+				//alert("ddd"+this.dragIndex+"dddd");
+				return;
+			}
+        }  
+	}
+	//拖动响应
+	function RadarDrag(clickx,clicky)
+	{
+			var i=this.dragIndex;
+			
+            var x = clickx-this.center.x;
+            var y = clicky-this.center.y;
+			var restsum=100-this.data[i][1];
+			this.data[i][1]=(x*Math.cos(this.mAngle * i)+y*Math.sin(this.mAngle * i))*100/this.radius;	
+			if(this.data[i][1]<0)
+				this.data[i][1]=0;
+			if(this.data[i][1]>100)
+				this.data[i][1]=100;
+			var factor=(100-this.data[i][1])/restsum;
+			for(var index = 0; index < this.mCount; index ++)
+			{
+				if(index!=i)
+					this.data[index][1]*=factor;		
+			}
+			for(var index = 0; index < this.mCount; index ++)
+				setCookie(index+1,this.data[index][1]);
+			
+			Query();
+	}
+	function CreateRadarMap(mData,mCenter,mRadius,mCtx) {
+		var oRadarMap = new Object;
+		oRadarMap.data=mData;
+		oRadarMap.center = mCenter;
+		oRadarMap.radius = mRadius;
+		oRadarMap.ctx = mCtx;
+	  
+		oRadarMap.mCount = mData.length; //边数 
+
+		oRadarMap.mAngle = Math.PI * 2 / oRadarMap.mCount; //角度
+		oRadarMap.mPointSize = 5; //点的大小
+		oRadarMap.mColorPolygon = '#527A71'; //多边形颜色
+		oRadarMap.mColorLines = '#B8B8B8'; //顶点连线颜色
+		oRadarMap.mColorText = '#000000';
+		oRadarMap.mColorRegionfill = 'rgba(73, 109, 99, 0.5)';
+		oRadarMap.mColorCirclefill = 'rgba(125, 129, 164, 0.8)';
+		
+		oRadarMap.drawPolygon=drawPolygon;
+		oRadarMap.drawLines=drawLines;
+		oRadarMap.drawText=drawText;
+		oRadarMap.drawRegion=drawRegion;
+		oRadarMap.drawCircle=drawCircle;
+		oRadarMap.draw=function(){
+		this.drawPolygon();
+		this.drawLines();
+		this.drawText();
+		this.drawRegion();
+		this.drawCircle();
+		}
+		
+		
+		oRadarMap.isDragging=false;
+		oRadarMap.dragIndex=0;
+		oRadarMap.click=RadarClick;
+		oRadarMap.drag=RadarDrag;
+		return oRadarMap;
+	}
+	
+	var canvas = document.createElement('canvas');
+    document.body.appendChild(canvas);
+    canvas.height = mH;
+    canvas.width = mW;
+    mCtx = canvas.getContext('2d');
+	  
+	canvas.onmousedown = canvasClick;
+  canvas.onmouseup = stopDragging;
+  canvas.onmouseout = stopDragging;
+  canvas.onmousemove = dragCircle;
+	 
+	var radarmaps=[];  
+	  
+	var center=new Object;
+	center.x=300;
+	center.y=200;
+	var radarmap=CreateRadarMap(mData,center,150,mCtx);
+	radarmaps.push(radarmap);
+	var center1=new Object;
+	center1.x=800;
+	center1.y=200;
+	var mData1 = [          ['Gas', 20],
+                        ['Water,Plastic', 20],
+                        ['Energy', 20],
+                        ['Energy efficiencv', 20],
+                        ['Repair+Recycle', 20]];
+	var radarmap2=CreateRadarMap(mData1,center1,150,mCtx);
+	radarmap2.mPointSize=0;
+	radarmaps.push(radarmap2);
+	DrawMap();
+	
+	
+	function DrawMap(){
+		mCtx.clearRect(0, 0, canvas.width, canvas.height);
+		for(var i=0;i<radarmaps.length;i++)
+			radarmaps[i].draw();
+	}
+	
+	function stopDragging() {
+      for(var i=0;i<radarmaps.length;i++)
+		radarmaps[i].isDragging=false;
+    } 
+	
+	function canvasClick(e) {
+      // 取得画布上被单击的点
+      var clickX = e.pageX - canvas.offsetLeft;
+      var clickY = e.pageY - canvas.offsetTop;
+ 
+      // 查找被单击的圆圈
+      for(var i=0;i<radarmaps.length;i++)
+		radarmaps[i].click(clickX,clickY);
+    }
+	function dragCircle(e) {
+
+        // 取得鼠标位置
+        var x = e.pageX - canvas.offsetLeft;
+        var y = e.pageY - canvas.offsetTop;
+		for(var i=0;i<radarmaps.length;i++)
+			if(radarmaps[i].isDragging)
+			{
+				radarmaps[i].drag(x,y);
+			}			
+		DrawMap();
+		mCtx.save();
+
+        var fontSize = 45;
+        mCtx.font = fontSize + 'px Microsoft Yahei';
+        mCtx.fillStyle = 'rgba(137,138,124,0.9)';
+		var cir=100*radarmaps[0].data[0][1];
+		//console.log(cir);
+		mCtx.fillText("CIR："+cir.toFixed(2), 450,400);
+		mCtx.fillText("Level："+cir.toFixed(2), 450,450);
+		mCtx.fillText('Weight', 250,400);
+		mCtx.restore();
+    }
+	function sendData(id,mData)
+	{
+		var _paramObj=JSON.parse(JSON.stringify(paramObj));
+		_paramObj.httpUrl+=id;
+		var data=new Object;
+		for(var i=0;i<mData.length;i++)
+		     data[mData[i][0]]=mData[i][1];
+		_paramObj.data=data;
+		httpRequest(_paramObj,DrawData,function(){});
+	}
+	function DrawData(text)
+	{
+		data=JSON.parse(text);
+		mData1[0][1]=data['aa']*100;
+		mData1[1][1]=data['bb']*100;
+		mData1[2][1]=data['cc']*100;
+		mData1[3][1]=data['dd']*100;
+		mData1[4][1]=data['ee']*100;
+		mData1[0][0]="dfasdf/dfaf\n\rasdf";
+		DrawMap();
+		mCtx.save();
+
+        var fontSize = 45;
+        mCtx.font = fontSize + 'px Microsoft Yahei';
+        mCtx.fillStyle = 'rgba(137,138,124,0.9)';
+		var cir=100*radarmaps[0].data[0][1];
+		//console.log(cir);
+		mCtx.fillText("CIR："+cir.toFixed(2), 450,400);
+		mCtx.fillText("Level："+cir.toFixed(2), 450,450);
+		mCtx.fillText('Weight', 250,400);
+		mCtx.restore();
+		console.log(text)
+	}
+	function Query()
+	{
+		var barcode=document.getElementById('barcodeid').value;
+		sendData(barcode,mData);
+	}
+</script>
+
+</body>
+</html>
