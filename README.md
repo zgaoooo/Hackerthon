@@ -1,19 +1,14 @@
 # Prototype Climate Impact Rating Server & API
-
-This code provides a starter kit that will allow you to standup a prototype Climate Impact Rating (CIR) server, with a consumer API and a backend CouchDB database instance in IBM Cloudant.
-
-Refer to the [tutorial](https://developer.ibm.com/tutorials/provision-a-couchdb-instance-using-cloudant-cfc-starter-kit-2/) for installation and usage instructions.
-
-This solution starter was initially created at the United Nations Human Rights Office in Geneva, Switzerland on February 27-28, 2020, and built out over following 4 weeks. It features contributions by technologists from JPMorgan Chase, Persistent Systems, IBM, and Red Hat.
+WebApp: 一个简单的web程序
+Analysis：气候影响分析程序
+CIRAPI：API服务器
 
 ## Authors
 
-* Vincent Batts - Red Hat
-* Binu Midhun - IBM
-* Mark Meiklejohn - JPMorgan Chase
-* Roberto Mosqueda - Persistent Systems
-* Henry Nash - IBM
+* 任静静 北京大学物理学院大气与海洋科学系直博三年级学生，从事气溶胶遥感算法研究，擅长python matlab编程语言。
+* 姜中景 北京大学物理学院大气与海洋科学系直博三年级学生，研究方向为大气化学，擅长matlab、ncl编程语言以及大气化学传输模式。
+* 谭海月 北京大学物理学院大气与海洋科学系直博三年级学生，研究方向为大气化学，擅长数值模拟
+* 房思勤 西安电子科技大学硕士，研究方向为区块链，擅长C++编程。
+* 高镇 西安电子科技大学硕士，研究方向为计算机视觉，擅长C++编程。
 
-## License
 
-This solution starter is made available under the [Apache 2 License](LICENSE).
