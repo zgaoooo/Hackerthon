@@ -13,7 +13,10 @@ WebAPP:
 访问WebApp
 
 CIRAPI  
-API服务器，从云端数据库读取数据，调用Analysis模块进行分析
+API服务器，
+在目录下使用 
+> python pipenv run server.py  
+启动api服务器 ，从云端数据库读取数据，调用Analysis模块进行分析
 ## Authors
 
 * 任静静 北京大学物理学院大气与海洋科学系直博三年级学生，从事气溶胶遥感算法研究，擅长python matlab编程语言。
