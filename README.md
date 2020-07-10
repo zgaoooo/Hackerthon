@@ -1,7 +1,7 @@
 # Prototype Climate Impact Rating Server & API
-WebApp: 一个简单的web程序
-Analysis：气候影响分析程序
-CIRAPI：API服务器
+- WebApp: 一个简单的web程序
+- Analysis：气候影响分析程序
+- CIRAPI：API服务器
 
 ## Authors
 
