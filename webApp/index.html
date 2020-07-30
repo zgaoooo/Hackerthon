@@ -11,20 +11,24 @@
 <body>
 <form>
 Barcode: <input type="text" id="barcodeid" />
-<input type="button" onclick="Query()" value="查询" />
+<input type="button" onclick="Sure()" value="OK" />
+<input type="button" onclick="window.location.href='Output.html'" value="Search" />
+
 </form>
+
 <script type="text/javascript"> 
+//<input type="button" value="运行 python" onclick="exec1('python ../Analysis/Data2Label.py')" />
 function httpRequest(paramObj,fun,errFun) {
 	var xmlhttp = null;
-	/*创建XMLHttpRequest对象，
-	 *老版本的 Internet Explorer（IE5 和 IE6）使用 ActiveX 对象：new ActiveXObject("Microsoft.XMLHTTP")
+	/*create XMLHttpRequest target，
+	 *older Internet Explorer（IE5 和 IE6）使用 ActiveX 对象：new ActiveXObject("Microsoft.XMLHTTP")
 	 * */
 	if(window.XMLHttpRequest) {
 		xmlhttp = new XMLHttpRequest();
 	}else if(window.ActiveXObject) {
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	/*判断是否支持请求*/
+	/*judge whether support or not 判断是否支持请求*/
 	if(xmlhttp == null) {
 		alert('你的浏览器不支持XMLHttp');
 		return;
@@ -186,7 +190,7 @@ var paramObj = {
         ctx.restore();
     }
 
-    //绘制数据区域
+    //draw region 绘制数据区域
     function drawRegion(){
         var ctx=this.ctx;
 		ctx.save();
@@ -205,7 +209,7 @@ var paramObj = {
         ctx.restore();
     }
 
-    //画点
+    //draw circle画点
     function drawCircle(){
         var ctx=this.ctx;
 		ctx.save();
@@ -223,7 +227,7 @@ var paramObj = {
 
         ctx.restore();
     }
-	//点击响应
+	//click 点击响应
 	function RadarClick(clickx,clicky)
 	{
 		var r = this.mPointSize;
@@ -241,7 +245,7 @@ var paramObj = {
 			}
         }  
 	}
-	//拖动响应
+	//drag to show radar pic 拖动响应
 	function RadarDrag(clickx,clicky)
 	{
 			var i=this.dragIndex;
@@ -310,29 +314,18 @@ var paramObj = {
     mCtx = canvas.getContext('2d');
 	  
 	canvas.onmousedown = canvasClick;
-  canvas.onmouseup = stopDragging;
-  canvas.onmouseout = stopDragging;
-  canvas.onmousemove = dragCircle;
+    canvas.onmouseup = stopDragging;
+    canvas.onmouseout = stopDragging;
+    canvas.onmousemove = dragCircle;
 	 
 	var radarmaps=[];  
 	  
 	var center=new Object;
-	center.x=300;
+	center.x=500;
 	center.y=200;
 	var radarmap=CreateRadarMap(mData,center,150,mCtx);
 	radarmaps.push(radarmap);
-	var center1=new Object;
-	center1.x=800;
-	center1.y=200;
-	var mData1 = [          ['Gas', 20],
-                        ['Water,Plastic', 20],
-                        ['Energy', 20],
-                        ['Energy efficiencv', 20],
-                        ['Repair+Recycle', 20]];
-	var radarmap2=CreateRadarMap(mData1,center1,150,mCtx);
-	radarmap2.mPointSize=0;
-	radarmaps.push(radarmap2);
-	DrawMap();
+
 	
 	
 	function DrawMap(){
@@ -371,12 +364,8 @@ var paramObj = {
         var fontSize = 45;
         mCtx.font = fontSize + 'px Microsoft Yahei';
         mCtx.fillStyle = 'rgba(137,138,124,0.9)';
-		var cir=100*radarmaps[0].data[0][1];
-		//console.log(cir);
-		mCtx.fillText("CIR："+cir.toFixed(2), 450,400);
-		mCtx.fillText("Level："+cir.toFixed(2), 450,450);
-		mCtx.fillText('Weight', 250,400);
-		mCtx.restore();
+		var cir=0.01*radarmaps[0].data[0][1];
+	
     }
 	function sendData(id,mData)
 	{
@@ -388,6 +377,7 @@ var paramObj = {
 		_paramObj.data=data;
 		httpRequest(_paramObj,DrawData,function(){});
 	}
+	
 	function DrawData(text)
 	{
 		data=JSON.parse(text);
@@ -396,26 +386,90 @@ var paramObj = {
 		mData1[2][1]=data['cc']*100;
 		mData1[3][1]=data['dd']*100;
 		mData1[4][1]=data['ee']*100;
-		mData1[0][0]="dfasdf/dfaf\n\rasdf";
-		DrawMap();
-		mCtx.save();
+		//mData1[0][0]="dfasdf/dfaf\n\rasdf";
+		//DrawMap();
+		/*mCtx.save();
 
         var fontSize = 45;
         mCtx.font = fontSize + 'px Microsoft Yahei';
         mCtx.fillStyle = 'rgba(137,138,124,0.9)';
 		var cir=100*radarmaps[0].data[0][1];
 		//console.log(cir);
-		mCtx.fillText("CIR："+cir.toFixed(2), 450,400);
-		mCtx.fillText("Level："+cir.toFixed(2), 450,450);
-		mCtx.fillText('Weight', 250,400);
-		mCtx.restore();
-		console.log(text)
+		//mCtx.fillText("CIR："+cir.toFixed(2), 450,400);
+		//mCtx.fillText("Level："+cir.toFixed(2), 450,450);
+		//mCtx.fillText('Weight', 250,400);
+		//mCtx.restore();*/
+		//console.log(text)
 	}
+	
+
+	//query
+	//function Query()
 	function Query()
 	{
 		var barcode=document.getElementById('barcodeid').value;
-		sendData(barcode,mData);
+		//sendData(barcode,mData);	
+
+		//console.save(barcode,'D:\Material\Project\hackerthon2020\UI_web\webApp\out.json')
+		//console.save(mData,'D:\Material\Project\hackerthon2020\UI_web\webApp\out.json')
 	}
+	function Sure()
+	{
+	    var barcode=document.getElementById('barcodeid').value;
+		console.log(barcode)
+		console.log(mData)
+		console.save([barcode,mData],'out.json')
+		//sleep(5000)
+		//run python script
+		exec1('python ../Analysis/Data2Label.py')
+		
+	}
+	
+	
+
+    function exec1(command) 
+   {     
+	  var ws = new ActiveXObject("WScript.Shell");      
+	  ws.run(command);
+    }  
+	
+	
+	
+	function sleep(numberMillis) {
+    var now = new Date();
+    var exitTime = now.getTime() + numberMillis;
+    while (true) {
+        now = new Date();
+        if (now.getTime() > exitTime)
+            return;
+    }
+}
+    (function(console){
+
+     console.save = function(data, filename){
+
+    if(!data) {
+        console.error('Console.save: No data')
+        return;
+    }
+
+    if(!filename) filename = 'console.json'
+
+    if(typeof data === "object"){
+        data = JSON.stringify(data, undefined, 4)
+    }
+
+    var blob = new Blob([data], {type: 'text/json'}),
+        e    = document.createEvent('MouseEvents'),
+        a    = document.createElement('a')
+
+    a.download = filename
+    a.href = window.URL.createObjectURL(blob)
+    a.dataset.downloadurl =  ['text/json', a.download, a.href].join(':')
+    e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+    a.dispatchEvent(e)
+    }
+    })(console)	
 </script>
 
 </body>

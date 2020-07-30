@@ -14,16 +14,36 @@ from cloudant.client import Cloudant
 
 # You must overwrite the values in api_access below with those from your service credential, that you created in IBM Cloud IAM for Cloudant.
 # The actual values below are to just show the format - and these are no longer valid.
+#api_access = {
+#  "apikey": "_UsirP0CmxCdHFOAdbP89pgAljVIvdf_OFSYwCV_y6Z6",
+# "host": "9fa0f376-a8b3-4833-86b0-dbc627c2f507-bluemix.cloudantnosqldb.appdomain.cloud",
+# "iam_apikey_name": "accessCredt",
+#  "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+#  "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/884077a4f8c744e7a474f271b23a56f5::serviceid:ServiceId-e3191a30-fd5a-4563-8bdd-cdf2234812cc",
+#  "url": "https://9fa0f376-a8b3-4833-86b0-dbc627c2f507-bluemix.cloudantnosqldb.appdomain.cloud",
+#  "username": "9fa0f376-a8b3-4833-86b0-dbc627c2f507-bluemix"
+#}
+
 api_access = {
-  "apikey": "_UsirP0CmxCdHFOAdbP89pgAljVIvdf_OFSYwCV_y6Z6",
-  "host": "9fa0f376-a8b3-4833-86b0-dbc627c2f507-bluemix.cloudantnosqldb.appdomain.cloud",
-  "iam_apikey_description": "Auto-generated for key b915d1b9-b3ae-4d6b-b22f-35abb3b45c2e",
-  "iam_apikey_name": "accessCredt",
+  "apikey": "ijOdYC9FyAax1tYKyDZOaFItNaAUb4wPj57mCRg-noUr",
+  "host": "4e301a0a-1bb2-43bf-9a2b-6a6f98958999-bluemix.cloudantnosqldb.appdomain.cloud",
+  "iam_apikey_description": "Auto-generated for key da61ff95-5cd4-43f7-b963-488edda07663",
+  "iam_apikey_name": "服务凭证-1",
   "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-  "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/884077a4f8c744e7a474f271b23a56f5::serviceid:ServiceId-e3191a30-fd5a-4563-8bdd-cdf2234812cc",
-  "url": "https://9fa0f376-a8b3-4833-86b0-dbc627c2f507-bluemix.cloudantnosqldb.appdomain.cloud",
-  "username": "9fa0f376-a8b3-4833-86b0-dbc627c2f507-bluemix"
-}
+  "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/19550bea70a2464a8b8d6166c6cb511d::serviceid:ServiceId-828ab171-1437-4b31-a0c1-23bae99a74ac",
+  "url": "https://4e301a0a-1bb2-43bf-9a2b-6a6f98958999-bluemix.cloudantnosqldb.appdomain.cloud",
+  "username": "4e301a0a-1bb2-43bf-9a2b-6a6f98958999-bluemix"
+}#api_access = {
+#   "apikey": "-OPMa01VOo5YhaHqHatlzNQiNFF1b31fqlY3hRpc720H",
+#   "host": "c5abe484-83a8-407e-92f8-b3be0f8f0afe-bluemix.cloudantnosqldb.appdomain.cloud",
+#   "iam_apikey_description": "Auto-generated for key 1547206e-bf1b-466e-b797-7afabfc9b29e",
+#   "iam_apikey_name": "apiaccess",
+#   "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+#  "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/4a35fbbd385a17dc3178b6dc66949178::serviceid:ServiceId-c6da6f0d-c24c-4d28-b15e-ea426501b8d1",
+#  "url": "https://c5abe484-83a8-407e-92f8-b3be0f8f0afe-bluemix.cloudantnosqldb.appdomain.cloud",
+#  "username": "c5abe484-83a8-407e-92f8-b3be0f8f0afe-bluemix"
+# }
+
 
 client = Cloudant.iam(
     api_access['username'],

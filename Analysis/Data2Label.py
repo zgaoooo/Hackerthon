@@ -23,9 +23,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image,ImageEnhance,ImageDraw,ImageFont
 import xlrd
+import os
 
-
-f = open('/mnt/storagedata1/renjj/Project/HackerThon2020/Solution-Starter-Kit-Energy-2020/example/dummy-data.txt','r')
+f = open('./dummy-data.txt','r')
 lines = f.readlines()
 f.close()
 Type = []
@@ -91,19 +91,46 @@ FamilyWater = sheet.col_values(11)[1:]
 Running = sheet.col_values(15)[1:]
 
 
-barcode = input('Product Barcode:')
-if barcode =='':
-    barcode = '0125551234501'
+#barcode = input('Product Barcode:')
+#if barcode =='':
+#    barcode = '0125551234501'
+#
+#input_str = input('Loveness of variable:Gas,(water+plastic),energy,energy efficiency,recycle and repair:')
+# read out.json as barcode and input_str
+#os.system("move C:\\Users\\任静静\\Downloads\\out.json .\\out.json")
+f = open('out.json','r')
+barcode = f.readlines()[1].strip().split(",")[0].split("\"")[1]
 ind = Barcode.index(barcode)
+print (barcode)
+f.close()
+f= open("out.json",'r')
+wei_gas= f.readlines()[5].strip()
+f.close()
+f= open("out.json",'r')
+wei_water= f.readlines()[9].strip()
+f.close()
+f= open("out.json",'r')
+wei_ener= f.readlines()[13].strip()
+f.close()
+f= open("out.json",'r')
+wei_ee= f.readlines()[17].strip()
+f.close()
+f= open("out.json",'r')
+wei_rr= f.readlines()[21].strip()
+f.close()
 
-input_str = input('Loveness of variable:Gas,(water+plastic),energy,energy efficiency,recycle and repair:')
 a = []
-if input_str =='':
-    a = [0.2] * 5
-else:
-    a = [float(x) for x in input_str.split(",")]
-
-if sum(a) ==1.0:
+#if input_str =='':
+#    a = [0.2] * 5
+#else:
+a.append(float(wei_gas)/100)
+a.append(float(wei_water)/100)
+a.append(float(wei_ener)/100)
+a.append(float(wei_ee)/100)
+a.append(float(wei_rr)/100)
+    #a = [float(x) for x in input_str.split(",")]
+print (sum(a))
+if sum(a) <=1.0:
     a1, a2, a3, a4, a5 = a
     CIR =np.multiply(a1,GasNor[ind])+np.multiply(a2,WasteNor[ind])+np.multiply(a3,EnergyNor[ind])+np.multiply(a4/4.0,EE[ind])+np.multiply(a5/18.0,18-Recycle[ind]-Repair[ind])  
     CIRAll =np.multiply(a1,GasNor)+np.multiply(a2,WasteNor)+np.multiply(a3,EnergyNor)+np.multiply(a4/4.0,EE)+np.multiply(a5/18.0,18-Recycle-Repair)  
